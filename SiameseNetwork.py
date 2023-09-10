@@ -43,6 +43,7 @@ class SiameseNetwork(nn.Module):
     def forward_once(self, x):
         # Forward pass 
         output = self.cnn(x)
+        print(output.size())
         floaten_tensor = output.view(1, -1)
         self.floaten_size = floaten_tensor.size(1)
         output = self.fc(floaten_tensor)
