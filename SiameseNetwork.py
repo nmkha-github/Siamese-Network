@@ -47,6 +47,7 @@ class SiameseNetwork(nn.Module):
         if self.floaten_size == 0:
             self.floaten_size = floaten_tensor.size(1)
             self.fc[0] = nn.Linear(self.floaten_size, 1024)
+            self.fc.cuda()
         output = self.fc(floaten_tensor)
         return output
 
