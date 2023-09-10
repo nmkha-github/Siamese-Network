@@ -87,14 +87,14 @@ class SiameseNetwork(nn.Module):
                 optimizer.zero_grad()
                 output1,output2 = self(img0, img1)
                 
-                loss_value = loss_f(output1,output2,label)
+                loss_value = loss_f(output1, output2, label)
                 # compute gradient 
                 loss_value.backward()
                 self.loss_values.append(loss_value.item())
                 optimizer.step()
             
             self.save()
-            print("Epoch {}\n Current loss {}\n".format(epoch,loss_contrastive.item()))
+            print("Epoch {}\n Current loss {}\n".format(epoch, loss_value.item()))
             
         return self.loss_values
 
