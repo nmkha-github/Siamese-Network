@@ -7,6 +7,7 @@ from ContrastiveLoss import ContrastiveLoss
 class SiameseNetwork(nn.Module):
     def __init__(self) -> None:
         super(SiameseNetwork, self).__init__()
+        self.cuda()
         self.epochs = -1
         self.loss_values = []
         self.floaten_size = 0
@@ -72,8 +73,7 @@ class SiameseNetwork(nn.Module):
         torch.cuda.empty_cache()
         if (dataloader is None):
             return
-        
-        self.cuda()
+
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=0.0005)
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
