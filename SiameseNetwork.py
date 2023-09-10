@@ -31,7 +31,7 @@ class SiameseNetwork(nn.Module):
         
         # Defining the fully connected layers
         self.fc = nn.Sequential(
-            nn.Linear(None, 1024),
+            nn.Linear(0, 1024),
             nn.ReLU(inplace=True),
             
             nn.Linear(1024, 128),
