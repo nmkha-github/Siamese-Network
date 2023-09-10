@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
 
 from ContrastiveLoss import ContrastiveLoss
 
@@ -66,16 +66,16 @@ class SiameseNetwork(nn.Module):
 
         return output1, output2
     
-    def train(self, dataset: Dataset | None=None, loss_function:torch.nn.Module=ContrastiveLoss):
+    def train(self, dataloader: DataLoader=None, loss_function:torch.nn.Module=ContrastiveLoss):
         torch.cuda.empty_cache()
-        if (dataset is None):
+        if (dataloader is None):
             return
         
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=0.0005)
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
             self.epochs = epoch
-            for _, data in enumerate(dataset, 0):
+            for _, data in enumerate(dataloader, 0):
                 data.to(self.device)
                 img0, img1 , label = data
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
