@@ -77,7 +77,7 @@ class SiameseNetwork(nn.Module):
             for _, data in enumerate(dataset, 0):
                 img0, img1 , label = data
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
-                data.to(torch.device)
+                data.to(self.device)
                 
                 optimizer.zero_grad()
                 output1,output2 = self(img0, img1)
