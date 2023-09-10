@@ -7,6 +7,8 @@ from torch.utils.data import Dataset
 
 class SignatureDataset(Dataset):
     def __init__(self, label_csv_dir=None, images_data_dir=None, transform=None) -> None:
+        self.images_data_dir = ''
+        
         # used to prepare the labels and images path
         if label_csv_dir is None:
             self.dataframe = pd.read_csv(os.getcwd() + '/dataset/signature/train_data.csv')
@@ -15,15 +17,15 @@ class SignatureDataset(Dataset):
         self.dataframe.columns =["image1", "image2", "label"]
         
         if images_data_dir is None:
-            self.images_dir = os.getcwd() + '/dataset/signature/train'
+            self.images_data_dir = os.getcwd() + '/dataset/signature/train'
         else:
-            self.images_dir = images_data_dir
+            self.images_data_dir = images_data_dir
         self.transform = transform
     
     def __getitem__(self, index) -> None:
         # getting the image path
-        image1_path=os.path.join(self.training_dir,self.train_df.iat[index, 0])
-        image2_path=os.path.join(self.training_dir,self.train_df.iat[index, 1])
+        image1_path=os.path.join(self.images_data_dir,self.dataframe.iat[index, 0])
+        image2_path=os.path.join(self.images_data_dir,self.dataframe.iat[index, 1])
         
         # Loading the image
         img1 = Image.open(image1_path)
@@ -36,7 +38,7 @@ class SignatureDataset(Dataset):
             img1 = self.transform(img1)
             img2 = self.transform(img2)
         
-        return img1, img2, torch.from_numpy(np.array([int(self.train_df.iat[index,2])], dtype=np.float32))
+        return img1, img2, torch.from_numpy(np.array([int(self.dataframe.iat[index,2])], dtype=np.float32))
     
     def __len__(self):
-        return len(self.train_df)
+        return len(self.dataframe)
