@@ -5,10 +5,11 @@ from torch.utils.data import DataLoader
 from ContrastiveLoss import ContrastiveLoss
 
 class SiameseNetwork(nn.Module):
-    def __init__(self, device) -> None:
+    def __init__(self) -> None:
         super(SiameseNetwork, self).__init__()
-        self.device = device
-        self.to(self.device)
+        
+        if torch.cuda.is_available():
+            self.cuda()
         self.epochs = -1
         self.loss_values = []
         
