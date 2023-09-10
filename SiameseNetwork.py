@@ -31,7 +31,7 @@ class SiameseNetwork(nn.Module):
         
         # Defining the fully connected layers
         self.fc = nn.Sequential(
-            nn.Linear(self.floaten_size, 1024),
+            nn.Linear(None, 1024),
             nn.ReLU(inplace=True),
             
             nn.Linear(1024, 128),
@@ -43,9 +43,10 @@ class SiameseNetwork(nn.Module):
     def forward_once(self, x):
         # Forward pass 
         output = self.cnn(x)
-        print(output.size())
-        floaten_tensor = output.view(1, -1)
-        self.floaten_size = floaten_tensor.size(1)
+        floaten_tensor = output.view(output.size(0), -1)
+        if self.floaten_size == 0:
+            self.floaten_size = floaten_tensor.size(1)
+            self.fc[0] = nn.Linear(self.floaten_size, 1024)
         output = self.fc(floaten_tensor)
         return output
 
