@@ -7,33 +7,31 @@ from ContrastiveLoss import ContrastiveLoss
 class SiameseNetwork(nn.Module):
     def __init__(self) -> None:
         super(SiameseNetwork, self).__init__()
-        
-        if torch.cuda.is_available():
-            self.cuda()
         self.epochs = -1
         self.loss_values = []
+        self.floaten_size = 0
         
         # Defining the CNN layers
         self.cnn = nn.Sequential(
-            nn.Conv2d(1, 96, kernel_size=12, stride=1),  #(117, 117, 96)
-            nn.ReLU(inplace=True),                      #(117, 117, 96)
-            nn.MaxPool2d(kernel_size=3, stride=2),      #(58, 58, 96)
+            nn.Conv2d(1, 96, kernel_size=12, stride=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
             
-            nn.Conv2d(96, 256, kernel_size=6, stride=1, padding=2),  #(56, 56, 256)
-            nn.ReLU(inplace=True),                                  #(56, 56, 256)
-            nn.MaxPool2d(3, stride=2),                              #(28, 28, 256)
+            nn.Conv2d(96, 256, kernel_size=6, stride=1, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(3, stride=2),
 
-            nn.Conv2d(256, 384, kernel_size=3, stride=1, padding=1),  #(28, 28, 384)
-            nn.ReLU(inplace=True),                                  #(28, 28, 384)
+            nn.Conv2d(256, 384, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
             
-            nn.Conv2d(384, 256, kernel_size=3, stride=1, padding=1),  #(28, 28, 256)
-            nn.ReLU(inplace=True),                                  #(28, 28, 256)
-            nn.MaxPool2d(3, stride=2),                              #(14, 14, 256)
+            nn.Conv2d(384, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(3, stride=2),
         )
         
         # Defining the fully connected layers
         self.fc = nn.Sequential(
-            nn.Linear(14 * 14 * 256, 1024),
+            nn.Linear(self.floaten_size, 1024),
             nn.ReLU(inplace=True),
             
             nn.Linear(1024, 128),
@@ -45,8 +43,9 @@ class SiameseNetwork(nn.Module):
     def forward_once(self, x):
         # Forward pass 
         output = self.cnn(x)
-        output = output.view(output.size()[0], -1)
-        output = self.fc(output)
+        floaten_tensor = output.view(1, -1)
+        self.floaten_size = floaten_tensor.size(1)
+        output = self.fc(floaten_tensor)
         return output
 
     def forward(self, input1, input2):
@@ -72,6 +71,7 @@ class SiameseNetwork(nn.Module):
         if (dataloader is None):
             return
         
+        self.cuda()
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=0.0005)
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
