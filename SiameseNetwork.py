@@ -75,6 +75,7 @@ class SiameseNetwork(nn.Module):
             return
 
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=0.0005)
+        loss_f = loss_function()
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
             self.epochs = epoch
@@ -86,10 +87,10 @@ class SiameseNetwork(nn.Module):
                 optimizer.zero_grad()
                 output1,output2 = self(img0, img1)
                 
-                loss_contrastive = loss_function(output1,output2,label)
+                loss_value = loss_f(output1,output2,label)
                 # compute gradient 
-                loss_contrastive.backward()
-                self.loss_values.append(loss_contrastive.item())
+                loss_value.backward()
+                self.loss_values.append(loss_value.item())
                 optimizer.step()
             
             self.save()
