@@ -101,5 +101,13 @@ class SiameseNetwork(nn.Module):
         print("Model Saved Successfully") 
         
     def load(self, path):
-        self = torch.load(path)
+        # Load the model's state_dict from the specified path
+        state_dict = torch.load(path)
+
+        # Load the state_dict onto the device it was saved from
+        self.load_state_dict(state_dict)
+
+        # Move the model to the appropriate device (cuda or cpu)
+        self.to(state_dict['fc.0.weight'].device)
+
         
