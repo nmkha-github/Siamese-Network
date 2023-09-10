@@ -75,7 +75,7 @@ class SiameseNetwork(nn.Module):
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
             self.epochs = epoch
-            for _, data in enumerate(dataloader, 0):
+            for _, (data, targets) in enumerate(dataloader):
                 data.to(self.device)
                 img0, img1 , label = data
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
