@@ -7,7 +7,6 @@ from ContrastiveLoss import ContrastiveLoss
 class SiameseNetwork(nn.Module):
     def __init__(self) -> None:
         super(SiameseNetwork, self).__init__()
-        self.cuda()
         self.epochs = -1
         self.loss_values = []
         self.floaten_size = 0
@@ -28,7 +27,7 @@ class SiameseNetwork(nn.Module):
             nn.Conv2d(384, 256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(3, stride=2),
-        )
+        ).cuda()
         
         # Defining the fully connected layers
         self.fc = nn.Sequential(
@@ -39,7 +38,7 @@ class SiameseNetwork(nn.Module):
             nn.ReLU(inplace=True),
             
             nn.Linear(128, 16)
-        )
+        ).cuda()
 
     def forward_once(self, x):
         # Forward pass 
