@@ -67,6 +67,7 @@ class SiameseNetwork(nn.Module):
         return output1, output2
     
     def train(self, dataset: Dataset | None=None, loss_function:torch.nn.Module=ContrastiveLoss):
+        torch.cuda.empty_cache()
         if (dataset is None):
             return
         
@@ -75,9 +76,9 @@ class SiameseNetwork(nn.Module):
         for epoch in range(self.epochs + 1, self.epochs + 10):
             self.epochs = epoch
             for _, data in enumerate(dataset, 0):
+                data.to(self.device)
                 img0, img1 , label = data
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
-                data.to(self.device)
                 
                 optimizer.zero_grad()
                 output1,output2 = self(img0, img1)

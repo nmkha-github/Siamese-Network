@@ -6,18 +6,18 @@ import pandas as pd
 from torch.utils.data import Dataset
 
 class SignatureDataset(Dataset):
-    def __init__(self, training_csv=None, training_dir=None, transform=None) -> None:
+    def __init__(self, label_csv_dir=None, images_data_dir=None, transform=None) -> None:
         # used to prepare the labels and images path
-        if training_csv is None:
-            self.train_df=pd.read_csv(os.getcwd() + '/dataset/signature/train_data.csv')
+        if label_csv_dir is None:
+            self.dataframe = pd.read_csv(os.getcwd() + '/dataset/signature/train_data.csv')
         else: 
-            self.train_df=pd.read_csv(training_csv)
+            self.dataframe = pd.read_csv(label_csv_dir)
+        self.dataframe.columns =["image1", "image2", "label"]
         
-        self.train_df.columns =["image1","image2","label"]
-        if training_dir is None:
-            self.training_dir = os.getcwd() + '/dataset/signature/train'
+        if images_data_dir is None:
+            self.images_dir = os.getcwd() + '/dataset/signature/train'
         else:
-            self.training_dir = training_dir
+            self.images_dir = images_data_dir
         self.transform = transform
     
     def __getitem__(self, index) -> None:
