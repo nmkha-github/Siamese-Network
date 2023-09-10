@@ -14,25 +14,25 @@ class SiameseNetwork(nn.Module):
         
         # Defining the CNN layers
         self.cnn = nn.Sequential(
-            nn.Conv2d(1, 96, kernel_size=12,stride=1),              #(116, 116, 96)
-            nn.ReLU(inplace=True),                                  #(116, 116, 96)
-            nn.MaxPool2d(kernel_size=3, stride=2),                  #(58, 58, 96)
+            nn.Conv2d(1, 96, kernel_size=12, stride=1),  #(117, 117, 96)
+            nn.ReLU(inplace=True),                      #(117, 117, 96)
+            nn.MaxPool2d(kernel_size=3, stride=2),      #(58, 58, 96)
             
-            nn.Conv2d(96, 256, kernel_size=6,stride=1,padding=2),   #(56, 56, 256)
+            nn.Conv2d(96, 256, kernel_size=6, stride=1, padding=2),  #(56, 56, 256)
             nn.ReLU(inplace=True),                                  #(56, 56, 256)
             nn.MaxPool2d(3, stride=2),                              #(28, 28, 256)
 
-            nn.Conv2d(256,384 , kernel_size=3,stride=1,padding=1),  #(27, 27, 384)
-            nn.ReLU(inplace=True),                                  #(27, 27, 384)
+            nn.Conv2d(256, 384, kernel_size=3, stride=1, padding=1),  #(28, 28, 384)
+            nn.ReLU(inplace=True),                                  #(28, 28, 384)
             
-            nn.Conv2d(384,256 , kernel_size=3,stride=1,padding=1),  #(26, 26, 256)
-            nn.ReLU(inplace=True),                                  #(26, 26, 256)
-            nn.MaxPool2d(3, stride=2),                              #(13, 13, 256)
+            nn.Conv2d(384, 256, kernel_size=3, stride=1, padding=1),  #(28, 28, 256)
+            nn.ReLU(inplace=True),                                  #(28, 28, 256)
+            nn.MaxPool2d(3, stride=2),                              #(14, 14, 256)
         )
         
         # Defining the fully connected layers
         self.fc = nn.Sequential(
-            nn.Linear(43264, 1024),
+            nn.Linear(14 * 14 * 256, 1024),
             nn.ReLU(inplace=True),
             
             nn.Linear(1024, 128),
