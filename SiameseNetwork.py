@@ -7,7 +7,7 @@ from ContrastiveLoss import ContrastiveLoss
 class SiameseNetwork(nn.Module):
     def __init__(self) -> None:
         super(SiameseNetwork, self).__init__()
-        self.epochs = -1
+        self.epochs = 0
         self.loss_values = []
         self.floaten_size = 0
         
@@ -75,7 +75,6 @@ class SiameseNetwork(nn.Module):
         loss_f = loss_function()
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
-            self.epochs = epoch
             print('training epoch ' + str(epoch) + '.') 
             for _, batch in enumerate(dataloader):
                 img0, img1 , label = batch
@@ -89,9 +88,10 @@ class SiameseNetwork(nn.Module):
                 loss_value.backward()
                 self.loss_values.append(loss_value.item())
                 optimizer.step()
-            
-            self.save(path=save_path)
+
+            self.epochs = epoch
             print("Epoch {}\n Current loss {}\n".format(epoch, loss_value.item()))
+            self.save(path=save_path)
             
         return self.loss_values
 
