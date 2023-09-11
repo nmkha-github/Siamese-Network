@@ -79,7 +79,7 @@ class SiameseNetwork(nn.Module):
         for epoch in range(self.epochs + 1, self.epochs + 10):
             print('training epoch ' + str(epoch) + '...') 
             for i, batch in enumerate(dataloader):
-                self.progress_bar(current=i, total=len(dataloader))
+                self.progress_bar(current=i + 1, total=len(dataloader))
     
                 img0, img1 , label = batch
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
@@ -117,7 +117,7 @@ class SiameseNetwork(nn.Module):
 
 
     def progress_bar(self, current, total, bar_length=20):
-        fraction = current / total
+        fraction = current / max(total, 1)
         arrow = int(fraction * bar_length - 1) * '-' + '>'
         padding = int(bar_length - len(arrow)) * ' '
         ending = '\n' if current == total else ''
