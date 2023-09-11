@@ -7,7 +7,7 @@ from ContrastiveLoss import ContrastiveLoss
 class SiameseNetwork(nn.Module):
     def __init__(self) -> None:
         super(SiameseNetwork, self).__init__()
-        self.epochs = 0
+        self.epochs = -1
         self.loss_values = []
         self.floaten_size = 0
         
@@ -75,8 +75,8 @@ class SiameseNetwork(nn.Module):
         loss_f = loss_function()
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
-            print('training epoch ' + str(epoch) + '.') 
-            for _, batch in enumerate(dataloader):
+            print('training epoch ' + str(epoch) + '...') 
+            for i, batch in enumerate(dataloader):
                 img0, img1 , label = batch
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
                 
@@ -88,8 +88,9 @@ class SiameseNetwork(nn.Module):
                 loss_value.backward()
                 self.loss_values.append(loss_value.item())
                 optimizer.step()
+                
+                self.progress_bar(i, len(dataloader))
 
-            self.epochs = epoch
             print("Epoch {}\n Current loss {}\n".format(epoch, loss_value.item()))
             self.save(path=save_path)
             
@@ -111,4 +112,10 @@ class SiameseNetwork(nn.Module):
         
         print('current epoch: ' + str(self.epochs))
 
-        
+
+    def progress_bar(self, current, total, bar_length=20):
+        fraction = current / total
+        arrow = int(fraction * bar_length - 1) * '-' + '>'
+        padding = int(bar_length - len(arrow)) * ' '
+        ending = '\n' if current == total else '\r'
+        print(f'Progress: [{arrow}{padding}] {int(fraction*100)}%', end=ending)
