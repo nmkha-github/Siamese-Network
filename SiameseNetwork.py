@@ -65,6 +65,13 @@ class SiameseNetwork(nn.Module):
 
         return output1, output2
     
+    def progress_bar(self, current, total, bar_length=20):
+        fraction = current / total
+        arrow = int(fraction * bar_length - 1) * '-' + '>'
+        padding = int(bar_length - len(arrow)) * ' '
+        ending = '\n' if current == total else '\r'
+        print(f'Progress: [{arrow}{padding}] {int(fraction*100)}%', end=ending)
+        
     def train(self, dataloader: DataLoader=None, loss_function:torch.nn.Module=ContrastiveLoss, save_path=''):
         torch.cuda.empty_cache()
         if (dataloader is None):
@@ -77,6 +84,8 @@ class SiameseNetwork(nn.Module):
         for epoch in range(self.epochs + 1, self.epochs + 10):
             print('training epoch ' + str(epoch) + '...') 
             for i, batch in enumerate(dataloader):
+                self.progress_bar(current=i, total=len(dataloader))
+    
                 img0, img1 , label = batch
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
                 
@@ -88,10 +97,9 @@ class SiameseNetwork(nn.Module):
                 loss_value.backward()
                 self.loss_values.append(loss_value.item())
                 optimizer.step()
-                
-                self.progress_bar(i, len(dataloader))
-
-            print("Epoch {}\n Current loss {}\n".format(epoch, loss_value.item()))
+            
+            self.epochs = epoch
+            print("Epoch {}, Current loss: {}".format(epoch, loss_value.item()))
             self.save(path=save_path)
             
         return self.loss_values
@@ -113,9 +121,4 @@ class SiameseNetwork(nn.Module):
         print('current epoch: ' + str(self.epochs))
 
 
-    def progress_bar(self, current, total, bar_length=20):
-        fraction = current / total
-        arrow = int(fraction * bar_length - 1) * '-' + '>'
-        padding = int(bar_length - len(arrow)) * ' '
-        ending = '\n' if current == total else '\r'
-        print(f'Progress: [{arrow}{padding}] {int(fraction*100)}%', end=ending)
+    
