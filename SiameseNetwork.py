@@ -76,7 +76,7 @@ class SiameseNetwork(nn.Module):
         
         for epoch in range(self.epochs + 1, self.epochs + 10):
             self.epochs = epoch
-            
+            print('training epoch ' + str(epoch) + '.') 
             for _, batch in enumerate(dataloader):
                 img0, img1 , label = batch
                 img0, img1 , label = img0.cuda(), img1.cuda() , label.cuda()
