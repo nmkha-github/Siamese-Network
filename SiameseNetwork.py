@@ -109,11 +109,13 @@ class SiameseNetwork(nn.Module):
         # Load the model's state_dict from the specified path
         state_dict = torch.load(path)
 
+        self.fc[0] = state_dict.__class__.fc[0]
+            
         # Load the state_dict onto the device it was saved from
         self.load_state_dict(state_dict)
 
         # Move the model to the appropriate device (cuda or cpu)
-        self.to(state_dict['fc.0.weight'].device)
+        self.cuda()
         
         print('current epoch: ' + str(self.epochs))
 
