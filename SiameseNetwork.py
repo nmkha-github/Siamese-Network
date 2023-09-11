@@ -65,12 +65,12 @@ class SiameseNetwork(nn.Module):
 
         return output1, output2
     
-    def progress_bar(self, current, total, bar_length=20):
+    def progress_bar(current, total, bar_length=20):
         fraction = current / total
         arrow = int(fraction * bar_length - 1) * '-' + '>'
         padding = int(bar_length - len(arrow)) * ' '
-        ending = '\n' if current == total else '\r'
-        print(f'Progress: [{arrow}{padding}] {int(fraction*100)}%', end=ending)
+        ending = '\n' if current == total else ''
+        print(f'\rProgress: [{arrow}{padding}] {int(fraction*100)}%', end=ending)
         
     def train(self, dataloader: DataLoader=None, loss_function:torch.nn.Module=ContrastiveLoss, save_path=''):
         torch.cuda.empty_cache()
