@@ -98,8 +98,11 @@ class SiameseNetwork(nn.Module):
             
         return self.loss_values
 
-    def save(self):
-        torch.save(self.state_dict(), "saved_models/Siamese_epoch_{}.pt".format(self.epochs))
+    def save(self, path=''):
+        if path != '':
+            torch.save(self.state_dict(), path + "/Siamese_epoch_{}.pt".format(self.epochs))
+        else:
+            torch.save(self.state_dict(), "saved_models/Siamese_epoch_{}.pt".format(self.epochs))
         print("Model Saved Successfully") 
         
     def load(self, path):
