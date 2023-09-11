@@ -69,7 +69,7 @@ class SiameseNetwork(nn.Module):
 
         return output1, output2
     
-    def train(self, dataloader: DataLoader=None, loss_function:torch.nn.Module=ContrastiveLoss):
+    def train(self, dataloader: DataLoader=None, loss_function:torch.nn.Module=ContrastiveLoss, save_path=''):
         torch.cuda.empty_cache()
         if (dataloader is None):
             return
@@ -93,7 +93,7 @@ class SiameseNetwork(nn.Module):
                 self.loss_values.append(loss_value.item())
                 optimizer.step()
             
-            self.save()
+            self.save(path=save_path)
             print("Epoch {}\n Current loss {}\n".format(epoch, loss_value.item()))
             
         return self.loss_values
