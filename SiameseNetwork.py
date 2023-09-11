@@ -27,27 +27,23 @@ class SiameseNetwork(nn.Module):
             nn.Conv2d(384, 256, kernel_size=3, stride=1, padding=1),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(3, stride=2),
-        ).cuda()
+        )
         
         # Defining the fully connected layers
         self.fc = nn.Sequential(
-            nn.Linear(0, 1024),
+            nn.LazyLinear(1024),
             nn.ReLU(inplace=True),
             
             nn.Linear(1024, 128),
             nn.ReLU(inplace=True),
             
             nn.Linear(128, 16)
-        ).cuda()
+        )
 
     def forward_once(self, x):
         # Forward pass 
         output = self.cnn(x)
         floaten_tensor = output.view(output.size(0), -1)
-        if self.floaten_size == 0:
-            self.floaten_size = floaten_tensor.size(1)
-            self.fc[0] = nn.Linear(self.floaten_size, 1024)
-            self.fc.cuda()
         output = self.fc(floaten_tensor)
         return output
 
@@ -73,7 +69,8 @@ class SiameseNetwork(nn.Module):
         torch.cuda.empty_cache()
         if (dataloader is None):
             return
-
+        
+        self.cuda()
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=0.0005)
         loss_f = loss_function()
         
@@ -108,14 +105,9 @@ class SiameseNetwork(nn.Module):
     def load(self, path):
         # Load the model's state_dict from the specified path
         state_dict = torch.load(path)
-
-        self.fc[0] = state_dict.fc[0]
             
         # Load the state_dict onto the device it was saved from
         self.load_state_dict(state_dict)
-
-        # Move the model to the appropriate device (cuda or cpu)
-        self.cuda()
         
         print('current epoch: ' + str(self.epochs))
 
