@@ -114,5 +114,7 @@ class SiameseNetwork(nn.Module):
 
         # Move the model to the appropriate device (cuda or cpu)
         self.to(state_dict['fc.0.weight'].device)
+        
+        print('current epoch: ' + self.epochs)
 
         
